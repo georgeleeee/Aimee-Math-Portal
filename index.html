@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Aimee Math Portal 1.0</title>
+    <link rel="apple-touch-icon" href="icon.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo">
+                <span class="logo-icon">▢</span>
+                <h1>Aimee Portal</h1>
+            </div>
+            <nav class="nav-menu">
+                <div class="nav-item active" onclick="switchView('journey')">
+                    <span class="nav-icon">📅</span><span>每周任务</span>
+                </div>
+                <div class="nav-group" id="group-math-tools">
+                    <div class="nav-group-title" onclick="toggleGroup('math-tools')">
+                        <span class="nav-icon">🧮</span><span>数学工具</span>
+                        <span class="caret">▼</span>
+                    </div>
+                    <div class="group-items">
+                        <div class="nav-item sub-item" onclick="switchView('translator')">
+                            <span class="nav-icon">🔠</span><span>数学翻译机</span>
+                        </div>
+                        <div class="nav-item sub-item" onclick="switchView('lab')">
+                            <span class="nav-icon">🔬</span><span>试错实验室</span>
+                        </div>
+                        <div class="nav-item sub-item" onclick="switchView('workshop')">
+                            <span class="nav-icon">🛠️</span><span>重新发明工坊</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="nav-item" onclick="switchView('studio')">
+                    <span class="nav-icon">🎙️</span><span>费曼录音棚</span>
+                </div>
+                <div class="nav-item" onclick="switchView('upload')">
+                    <span class="nav-icon">📤</span><span>习题册上传</span>
+                </div>
+                <div class="nav-item" onclick="switchView('vault')">
+                    <span class="nav-icon">📝</span><span>学习笔记</span>
+                </div>
+            </nav>
+            <div class="student-profile">
+                <div class="avatar">A</div>
+                <div class="info">
+                    <span class="name">Aimee</span>
+                    <span class="level">Level 14</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <header class="top-bar">
+                <div id="view-title">每周任务</div>
+                <div class="notifications">🔔</div>
+            </header>
+            
+            <!-- Journey View -->
+            <section class="content-view" id="view-journey">
+                <div class="hero-card">
+                    <div class="hero-text">
+                        <span class="week-tag" id="current-week-tag">WEEK 8</span>
+                        <h2 id="current-week-topic">一元二次方程深入</h2>
+                        <p id="current-week-desc">本周重点：配方法与求根公式的实战应用</p>
+                    </div>
+                    <div class="progress-ring">
+                        <svg viewBox="0 0 36 36" class="circular-chart">
+                            <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            <path class="circle" stroke-dasharray="65, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            <text x="18" y="20.35" class="percentage">65%</text>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="task-grid" id="task-list">
+                    <!-- Tasks will be injected here -->
+                </div>
+            </section>
+
+            <!-- 🔠 数学翻译机 View -->
+            <section class="content-view hidden" id="view-translator">
+                <div class="module-intro">
+                    <h2>🔠 数学翻译机</h2>
+                    <p>把文字翻译成代数，让规律浮出水面。</p>
+                </div>
+                <div class="translator-ui">
+                    <div class="step-card">
+                        <label>1. 白描翻译：识别题目条件</label>
+                        <input type="text" placeholder="例如：设未知数为 x...">
+                    </div>
+                    <div class="step-card">
+                        <label>2. 逻辑建模：列出等式</label>
+                        <input type="text" placeholder="例如：2x + 10 = 50">
+                    </div>
+                </div>
+            </section>
+
+            <!-- 🔬 试错实验室 View -->
+            <section class="content-view hidden" id="view-lab">
+                <div class="module-intro">
+                    <h2>🔬 试错与反证实验室</h2>
+                    <p>“错误是通向真理的必经之路。”在这里代入极端情况试错吧！</p>
+                </div>
+                <div class="lab-ui">
+                    <div class="experiment-panel">
+                        <div class="panel-header">探索记录：极端情况推理</div>
+                        <div class="scratch-pad" contenteditable="true" placeholder="在这里写下你的试错路径...">
+                            假设我遇到了最倒霉的情况...
+                        </div>
+                        <div class="lab-tools">
+                            <button class="tool-btn">代入 0 或 1</button>
+                            <button class="tool-btn">代入极大值</button>
+                            <button class="tool-btn">反证法推导</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 🛠️ 重新发明工坊 View -->
+            <section class="content-view hidden" id="view-workshop">
+                <div class="module-intro">
+                    <h2>🛠️ 重新发明工坊</h2>
+                    <p>不要背公式，去“发明”它。利用教具观察规律。</p>
+                </div>
+                <div class="workshop-ui">
+                    <div class="canvas-area">
+                        <div class="placeholder-3d">
+                            <span>📐 3D 几何教具加载中...</span>
+                            <p>本周课题：圆柱体积公式的推导</p>
+                        </div>
+                    </div>
+                    <div class="discovery-log">
+                        <h3>我的发现：</h3>
+                        <textarea placeholder="用你自己的语言总结这个规律..."></textarea>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 🎙️ 费曼录音棚 View -->
+            <section class="content-view hidden" id="view-studio">
+                <div class="module-intro">
+                    <h2>🎙️ 费曼录音棚</h2>
+                    <p>能讲明白的，才是真正掌握的。</p>
+                </div>
+                <div class="studio-ui">
+                    <div class="record-btn">● 开始录制</div>
+                    <div class="wave-placeholder">〰️〰️〰️〰️〰️</div>
+                </div>
+            </section>
+
+            <!-- 📤 习题册上传 View -->
+            <section class="content-view hidden" id="view-upload">
+                <div class="module-intro">
+                    <h2>📤 习题册与试卷上传</h2>
+                    <p>拍照上传你的习题册或试卷，我会自动同步到你的学习资料库中。</p>
+                </div>
+                <div class="upload-container" id="drop-zone">
+                    <input type="file" id="file-input" multiple accept="image/*,application/pdf" hidden>
+                    <div class="upload-box" onclick="document.getElementById('file-input').click()">
+                        <div class="upload-icon">📸</div>
+                        <p>点击这里调用 iPad 相册 / 拖拽文件到这里</p>
+                        <span class="upload-hint">支持图片 (JPG/PNG) 或 PDF</span>
+                    </div>
+                    <div id="file-list" class="file-list"></div>
+                </div>
+            </section>
+
+            <!-- ✨ 学习笔记 View -->
+            <section class="content-view hidden" id="view-vault">
+                <div class="module-intro">
+                    <h2>📝 艾美的学习笔记</h2>
+                    <p>这是你的知识沉淀，每一个勋章和笔记都是一次思维的飞跃。</p>
+                </div>
+                <div class="vault-grid">
+                    <div class="badge-card">
+                        <div class="badge-icon">🛡️</div>
+                        <div class="badge-name">逻辑翻译官</div>
+                        <p>成功翻译 5 道复杂应用题</p>
+                    </div>
+                    <div class="badge-card locked">
+                        <div class="badge-icon">🔮</div>
+                        <div class="badge-name">试错大师</div>
+                        <p>在实验室完成 3 次极限推导</p>
+                    </div>
+                    <div class="spell-card">
+                        <h3>📖 魔法咒语 (知识点)</h3>
+                        <ul>
+                            <li>圆柱侧面积 = 底面周长 × 高 (已发明)</li>
+                            <li>鸽巢原理：最倒霉情况 + 1 (掌握中)</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- AI Chat Interface -->
+        <div class="chat-wrapper" id="chat-wrapper">
+            <div class="chat-header">
+                <div class="bot-info">
+                    <span class="bot-avatar">🤖</span>
+                    <div>
+                        <div class="bot-name">小安助教</div>
+                        <div class="bot-status">在线 · 正在思考</div>
+                    </div>
+                </div>
+                <button class="close-chat" onclick="toggleChat()">×</button>
+            </div>
+            <div class="chat-messages" id="chat-messages">
+                <div class="message bot">
+                    你好，艾米！我是你的数学领航员小安。本周我们要一起探索数学奥秘，准备好开始了吗？
+                </div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="user-input" placeholder="输入你的问题或想法..." onkeypress="handleChatKey(event)">
+                <button class="send-btn" onclick="sendChatMessage()">发送</button>
+            </div>
+        </div>
+
+        <div class="chat-toggle" id="chat-toggle" onclick="toggleChat()">
+            <span class="chat-icon">💬</span>
+            <span>有问题问我...</span>
+        </div>
+    </div>
+    <script src="main.js"></script>
+</body>
+</html>

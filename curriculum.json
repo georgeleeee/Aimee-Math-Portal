@@ -1,0 +1,45 @@
+{
+  "semester": "2026 Spring (六年级下册)",
+  "student": "Aimee",
+  "modules": [
+    { "id": "translator", "name": "数学翻译机", "icon": "🔠" },
+    { "id": "lab", "name": "试错实验室", "icon": "🔬" },
+    { "id": "workshop", "name": "重新发明工坊", "icon": "🛠️" },
+    { "id": "studio", "name": "费曼录音棚", "icon": "🎙️" },
+    { "id": "vault", "name": "魔法宝库", "icon": "✨" }
+  ],
+  "weeks": [
+    {
+      "week": 1,
+      "topic": "负数与百分数——“超市特工”",
+      "category": "生活中的数与几何",
+      "weekend_task": "收集一周开支小票，计算‘原价降价20%，再打九折’的最终折扣。",
+      "feynman_goal": "解释为什么不能把两次打折的百分数直接相加。",
+      "methodology": "学好数学并不难 - 代数思维转换"
+    },
+    {
+      "week": 2,
+      "topic": "圆柱与圆锥——“降维打击实验”",
+      "category": "生活中的数与几何",
+      "weekend_task": "旋转长方形纸片观察立体图形，用易拉罐纸包自己‘发明’侧面积公式。",
+      "feynman_goal": "展示易拉罐展开图，指明长方形长与圆柱的关系。",
+      "methodology": "烧掉数学书 - 重新发明公式"
+    },
+    {
+      "week": 5,
+      "topic": "比例与正反比例——“影子测量师”",
+      "category": "代数思维与逻辑推理",
+      "weekend_task": "测量自己身高与影子比例，据此计算小区大树的高度。",
+      "feynman_goal": "在‘翻译机’模块解释比例方程中每个符号的现实意义。",
+      "methodology": "实际问题建模"
+    },
+    {
+      "week": 7,
+      "topic": "鸽巢问题——“极端试错法”",
+      "category": "代数思维与逻辑推理",
+      "weekend_task": "玩‘盲抓袜子’或扑克牌游戏，用‘最倒霉的情况’推导必然性。",
+      "feynman_goal": "录制视频，一边抓牌一边用‘反证法’解释抽屉原理。",
+      "methodology": "反证法与极端思维"
+    }
+  ]
+}
