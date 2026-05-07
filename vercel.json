@@ -1,7 +1,7 @@
 {
   "rewrites": [
-    { "source": "/chat", "destination": "/api/index" },
-    { "source": "/ping", "destination": "/api/index" },
-    { "source": "/upload", "destination": "/api/index" }
+    { "source": "/chat", "destination": "/api/chat" },
+    { "source": "/api/chat", "destination": "/api/chat" },
+    { "source": "/ping", "destination": "/api/chat" }
   ]
 }
