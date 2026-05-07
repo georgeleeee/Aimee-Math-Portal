@@ -7,14 +7,20 @@ import img2pdf
 from datetime import datetime
 import traceback
 
+from dotenv import load_dotenv
+
+# 加载 .env 环境变量
+load_dotenv(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "Infrastructure/.env"))
+
 app = Flask(__name__, static_folder='.', static_url_path='')
 CORS(app)
 
 UPLOAD_FOLDER = "/Users/liqijiang/Library/CloudStorage/GoogleDrive-iso9002.qj@gmail.com/我的云端硬盘/Aimee_Uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-# 配置 Gemini
-genai.configure(api_key="AIzaSyDJYabBtowEv0ySn3H_U2B_ut6DALT9fBE")
+# 从环境变量获取 API Key
+api_key = os.getenv("GEMINI_API_KEY")
+genai.configure(api_key=api_key)
 model = genai.GenerativeModel('gemini-2.0-flash')
 
 @app.route('/')

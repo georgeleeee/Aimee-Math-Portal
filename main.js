@@ -1,7 +1,7 @@
 // Aimee Portal 1.0 - Core Engine
 
 let curriculumData = null;
-const API_BASE = "https://lindsay-notify-were-mini.trycloudflare.com";
+const API_BASE = ""; // 在 Vercel 中，前后端同域，使用相对路径即可
 
 document.addEventListener('DOMContentLoaded', () => {
     initApp();
