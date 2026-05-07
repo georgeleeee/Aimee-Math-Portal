@@ -1,43 +1,7 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "api/index.py",
-      "use": "@vercel/python"
-    },
-    {
-      "src": "*.html",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "*.css",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "*.js",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "*.json",
-      "use": "@vercel/static"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/chat",
-      "dest": "api/index.py"
-    },
-    {
-      "src": "/ping",
-      "dest": "api/index.py"
-    },
-    {
-      "src": "/upload",
-      "dest": "api/index.py"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/$1"
-    }
+  "rewrites": [
+    { "source": "/chat", "destination": "/api/index" },
+    { "source": "/ping", "destination": "/api/index" },
+    { "source": "/upload", "destination": "/api/index" }
   ]
 }
