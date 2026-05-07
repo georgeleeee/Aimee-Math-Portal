@@ -96,12 +96,14 @@
                 <div class="translator-ui">
                     <div class="step-card">
                         <label>1. 白描翻译：识别题目条件</label>
-                        <input type="text" placeholder="例如：设未知数为 x...">
+                        <input type="text" id="trans-step-1" placeholder="例如：设未知数为 x...">
                     </div>
                     <div class="step-card">
                         <label>2. 逻辑建模：列出等式</label>
-                        <input type="text" placeholder="例如：2x + 10 = 50">
+                        <input type="text" id="trans-step-2" placeholder="例如：2x + 10 = 50">
                     </div>
+                    <button class="tool-btn primary-btn" onclick="runTranslation()">🔍 提交翻译分析</button>
+                    <div id="translation-result" class="result-area hidden"></div>
                 </div>
             </section>
 
@@ -114,15 +116,17 @@
                 <div class="lab-ui">
                     <div class="experiment-panel">
                         <div class="panel-header">探索记录：极端情况推理</div>
-                        <div class="scratch-pad" contenteditable="true" placeholder="在这里写下你的试错路径...">
+                        <div class="scratch-pad" id="lab-scratch" contenteditable="true" placeholder="在这里写下你的试错路径...">
                             假设我遇到了最倒霉的情况...
                         </div>
                         <div class="lab-tools">
-                            <button class="tool-btn">代入 0 或 1</button>
-                            <button class="tool-btn">代入极大值</button>
-                            <button class="tool-btn">反证法推导</button>
+                            <button class="tool-btn" onclick="insertLabSnippet('0 或 1')">代入 0 或 1</button>
+                            <button class="tool-btn" onclick="insertLabSnippet('极大值')">代入极大值</button>
+                            <button class="tool-btn" onclick="insertLabSnippet('反证法')">反证法推导</button>
                         </div>
                     </div>
+                    <button class="tool-btn primary-btn" style="margin-top: 20px;" onclick="runExperiment()">🧪 启动试错分析</button>
+                    <div id="lab-result" class="result-area hidden"></div>
                 </div>
             </section>
 
@@ -153,7 +157,7 @@
                     <p>能讲明白的，才是真正掌握的。</p>
                 </div>
                 <div class="studio-ui">
-                    <div class="record-btn">● 开始录制</div>
+                    <div class="record-btn" onclick="toggleRecording()">● 开始录制</div>
                     <div class="wave-placeholder">〰️〰️〰️〰️〰️</div>
                 </div>
             </section>

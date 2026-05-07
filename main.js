@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function initApp() {
     await loadData();
-    renderJourney(8); // 默认渲染第 8 周
+    renderJourney(8); // 当前为第 8 周
     initNav();
 }
 
@@ -92,32 +92,38 @@ function renderJourney(weekNum) {
     
     document.getElementById('current-week-tag').innerText = `WEEK ${week.week}`;
     document.getElementById('current-week-topic').innerText = week.topic;
-    document.getElementById('current-week-desc').innerText = week.weekend_task;
+    document.getElementById('current-week-desc').innerText = week.category;
 
     const taskList = document.getElementById('task-list');
     taskList.innerHTML = `
         <div class="task-card current">
             <div class="task-icon">📍</div>
             <div class="task-info">
-                <h3>每周探索任务</h3>
+                <h3>本周探索任务</h3>
                 <p>${week.weekend_task}</p>
+                <div class="mini-progress"><div class="bar" style="width: 40%"></div></div>
             </div>
         </div>
         <div class="task-card" onclick="switchView('studio')">
             <div class="task-icon">🎙️</div>
             <div class="task-info">
-                <h3>录音回答路径</h3>
-                <p>点击进入录音棚，开启本周的费曼复盘：${week.feynman_goal}</p>
+                <h3>费曼复盘目标</h3>
+                <p>${week.feynman_goal}</p>
+                <span class="tap-hint">点击进入录音棚 →</span>
             </div>
         </div>
         <div class="task-card">
             <div class="task-icon">💡</div>
             <div class="task-info">
-                <h3>方法论指南</h3>
+                <h3>思维方法论</h3>
                 <p>${week.methodology}</p>
             </div>
         </div>
     `;
+
+    // 动态更新 3D 工坊占位符
+    const workshopTopic = document.querySelector('.placeholder-3d p');
+    if (workshopTopic) workshopTopic.innerText = `本周课题：${week.topic}`;
 }
 
 
@@ -146,16 +152,18 @@ async function sendChatMessage() {
     appendMessage('user', message);
     input.value = '';
 
+    const botMsgDiv = appendMessage('bot', "..."); // Placeholder for typing
+
     try {
-        const response = await fetch('http://' + window.location.hostname + ':3003/chat', {
+        const response = await fetch('/chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ message: message })
         });
         const data = await response.json();
-        appendMessage('bot', data.reply);
+        botMsgDiv.innerText = data.reply;
     } catch (error) {
-        appendMessage('bot', "哎呀，连接助教失败了。");
+        botMsgDiv.innerText = "哎呀，连接助教失败了。";
     }
 }
 
@@ -166,6 +174,85 @@ function appendMessage(role, text) {
     msgDiv.innerText = text;
     chatMessages.appendChild(msgDiv);
     chatMessages.scrollTop = chatMessages.scrollHeight;
+    return msgDiv;
+}
+
+async function runTranslation() {
+    const step1 = document.getElementById('trans-step-1').value;
+    const step2 = document.getElementById('trans-step-2').value;
+    const resultArea = document.getElementById('translation-result');
+
+    if (!step1 || !step2) {
+        alert("艾米，请先完成白描和建模两个步骤哦！");
+        return;
+    }
+
+    resultArea.classList.remove('hidden');
+    resultArea.innerText = "🔍 正在分析你的翻译逻辑...";
+
+    try {
+        const response = await fetch('/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                message: `[数学翻译机任务] 题目条件：${step1}。列出的等式：${step2}。请点评我的翻译逻辑，引导我检查是否正确，不要直接给答案。`
+            })
+        });
+        const data = await response.json();
+        resultArea.innerText = data.reply;
+    } catch (error) {
+        resultArea.innerText = "分析失败，请检查网络。";
+    }
+}
+
+async function runExperiment() {
+    const scratch = document.getElementById('lab-scratch').innerText;
+    const resultArea = document.getElementById('lab-result');
+
+    resultArea.classList.remove('hidden');
+    resultArea.innerText = "🧪 正在验证你的试错路径...";
+
+    try {
+        const response = await fetch('/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                message: `[试错实验室任务] 我的试错记录：${scratch}。请根据我的尝试，引导我发现矛盾点或验证规律。`
+            })
+        });
+        const data = await response.json();
+        resultArea.innerText = data.reply;
+    } catch (error) {
+        resultArea.innerText = "实验室连接中断。";
+    }
+}
+
+function insertLabSnippet(type) {
+    const scratch = document.getElementById('lab-scratch');
+    const snippets = {
+        '0 或 1': "\n[代入尝试] 如果未知数是 0 或 1，会发生：",
+        '极大值': "\n[极限尝试] 如果未知数变成 1,000,000，会发生：",
+        '反证法': "\n[反证假设] 假设结论不成立，那么："
+    };
+    scratch.innerText += snippets[type];
+    scratch.focus();
+}
+
+let isRecording = false;
+function toggleRecording() {
+    const btn = document.querySelector('.record-btn');
+    const studio = document.querySelector('.studio-ui');
+    isRecording = !isRecording;
+    
+    if (isRecording) {
+        btn.innerText = "■ 停止录制";
+        studio.classList.add('recording');
+        // 这里将来可以调用 MediaRecorder API
+    } else {
+        btn.innerText = "● 开始录制";
+        studio.classList.remove('recording');
+        appendMessage('bot', "艾米，你的讲解我已经收到了！讲得非常有逻辑。");
+    }
 }
 
 function toggleChat() {
@@ -174,3 +261,10 @@ function toggleChat() {
     wrapper.classList.toggle('active');
     toggle.style.display = wrapper.classList.contains('active') ? 'none' : 'flex';
 }
+
+// 绑定到 window
+window.toggleChat = toggleChat;
+window.runTranslation = runTranslation;
+window.runExperiment = runExperiment;
+window.insertLabSnippet = insertLabSnippet;
+window.toggleRecording = toggleRecording;
