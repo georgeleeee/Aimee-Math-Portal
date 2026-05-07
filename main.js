@@ -184,9 +184,15 @@ async function sendChatMessage() {
             body: JSON.stringify({ message: message })
         });
         const data = await response.json();
-        botMsgDiv.innerText = data.reply;
+        
+        if (response.ok) {
+            botMsgDiv.innerText = data.reply;
+        } else {
+            console.error("Backend error:", data);
+            botMsgDiv.innerHTML = `<span style="color: #ff6b6b">❌ 连接失败: ${data.reply || '未知错误'}</span><br><small style="font-size: 0.7rem; opacity: 0.7">${JSON.stringify(data.debug || data.trace || '')}</small>`;
+        }
     } catch (error) {
-        botMsgDiv.innerText = "哎呀，连接助教失败了。";
+        botMsgDiv.innerText = "哎呀，连接助教失败了。请检查网络。";
     }
 }
 
