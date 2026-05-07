@@ -9,8 +9,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function initApp() {
     await loadData();
-    renderJourney(8); // 当前为第 8 周
+    renderJourney(8); 
     initNav();
+    updateVault();
+    initWorkshop();
+}
+
+function initWorkshop() {
+    const canvas = document.querySelector('.canvas-area');
+    // 添加一个简单的互动 SVG
+    canvas.innerHTML = `
+        <svg viewBox="0 0 200 200" style="width: 100%; height: 100%;">
+            <defs>
+                <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:var(--accent-primary);stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:var(--accent-secondary);stop-opacity:1" />
+                </linearGradient>
+            </defs>
+            <circle cx="100" cy="100" r="80" fill="none" stroke="url(#grad1)" stroke-width="2" stroke-dasharray="5,5">
+                <animateTransform attributeName="transform" type="rotate" from="0 100 100" to="360 100 100" dur="20s" repeatCount="indefinite" />
+            </circle>
+            <text x="100" y="105" text-anchor="middle" fill="var(--accent-primary)" font-size="10" font-weight="bold">思维实验室活跃中</text>
+            <path d="M60,100 L140,100 M100,60 L100,140" stroke="var(--glass-border)" stroke-width="1" />
+        </svg>
+    `;
 }
 
 async function loadData() {
@@ -201,6 +223,7 @@ async function runTranslation() {
         });
         const data = await response.json();
         resultArea.innerText = data.reply;
+        addBadgeProgress('translator');
     } catch (error) {
         resultArea.innerText = "分析失败，请检查网络。";
     }
@@ -223,6 +246,7 @@ async function runExperiment() {
         });
         const data = await response.json();
         resultArea.innerText = data.reply;
+        addBadgeProgress('lab');
     } catch (error) {
         resultArea.innerText = "实验室连接中断。";
     }
@@ -240,20 +264,81 @@ function insertLabSnippet(type) {
 }
 
 let isRecording = false;
-function toggleRecording() {
+let mediaRecorder = null;
+let audioChunks = [];
+
+async function toggleRecording() {
     const btn = document.querySelector('.record-btn');
     const studio = document.querySelector('.studio-ui');
-    isRecording = !isRecording;
     
-    if (isRecording) {
-        btn.innerText = "■ 停止录制";
-        studio.classList.add('recording');
-        // 这里将来可以调用 MediaRecorder API
+    if (!isRecording) {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream);
+            audioChunks = [];
+            
+            mediaRecorder.ondataavailable = (event) => {
+                audioChunks.push(event.data);
+            };
+            
+            mediaRecorder.onstop = () => {
+                const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                const audioUrl = URL.createObjectURL(audioBlob);
+                saveNote(`费曼复盘录音 - ${new Date().toLocaleString()}`, audioUrl);
+                appendMessage('bot', "艾米，你的讲解我已经收到了！录音已存入你的魔法宝库。");
+            };
+            
+            mediaRecorder.start();
+            isRecording = true;
+            btn.innerText = "■ 停止录制";
+            studio.classList.add('recording');
+        } catch (err) {
+            alert("无法访问麦克风，请检查权限。");
+        }
     } else {
+        mediaRecorder.stop();
+        isRecording = false;
         btn.innerText = "● 开始录制";
         studio.classList.remove('recording');
-        appendMessage('bot', "艾米，你的讲解我已经收到了！讲得非常有逻辑。");
+        
+        // 增加成就进度
+        addBadgeProgress('studio');
     }
+}
+
+function saveNote(title, content) {
+    let notes = JSON.parse(localStorage.getItem('aimee_notes') || '[]');
+    notes.unshift({ title, content, date: new Date().toISOString() });
+    localStorage.setItem('aimee_notes', JSON.stringify(notes));
+    updateVault();
+}
+
+function addBadgeProgress(type) {
+    let progress = JSON.parse(localStorage.getItem('aimee_progress') || '{}');
+    progress[type] = (progress[type] || 0) + 1;
+    localStorage.setItem('aimee_progress', JSON.stringify(progress));
+    updateVault();
+}
+
+function updateVault() {
+    const spellList = document.querySelector('.spell-card ul');
+    const notes = JSON.parse(localStorage.getItem('aimee_notes') || '[]');
+    
+    if (spellList) {
+        spellList.innerHTML = notes.map(n => `
+            <li>
+                <strong>${n.title}</strong>
+                ${n.content.startsWith('blob:') ? `<br><audio controls src="${n.content}"></audio>` : `<p>${n.content}</p>`}
+            </li>
+        `).join('') || '<li>还没有笔记哦，快去完成任务吧！</li>';
+    }
+
+    const progress = JSON.parse(localStorage.getItem('aimee_progress') || '{}');
+    const translatorBadge = document.querySelector('.badge-card:nth-child(1)');
+    const labBadge = document.querySelector('.badge-card:nth-child(2)');
+
+    if (progress.translator >= 5) translatorBadge.classList.remove('locked');
+    if (progress.lab >= 3) labBadge.classList.remove('locked');
 }
 
 function toggleChat() {
