@@ -1,6 +1,7 @@
 // Aimee Portal 1.0 - Core Engine
 
 let curriculumData = null;
+const API_BASE = "https://lindsay-notify-were-mini.trycloudflare.com";
 
 document.addEventListener('DOMContentLoaded', () => {
     initApp();
@@ -70,7 +71,7 @@ function initUpload() {
             fileList.appendChild(item);
 
             try {
-                const response = await fetch('/upload', {
+                const response = await fetch(`${API_BASE}/upload`, {
                     method: 'POST',
                     body: formData
                 });
@@ -155,7 +156,7 @@ async function sendChatMessage() {
     const botMsgDiv = appendMessage('bot', "..."); // Placeholder for typing
 
     try {
-        const response = await fetch('/chat', {
+        const response = await fetch(`${API_BASE}/chat`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ message: message })
@@ -191,7 +192,7 @@ async function runTranslation() {
     resultArea.innerText = "🔍 正在分析你的翻译逻辑...";
 
     try {
-        const response = await fetch('/chat', {
+        const response = await fetch(`${API_BASE}/chat`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
@@ -213,7 +214,7 @@ async function runExperiment() {
     resultArea.innerText = "🧪 正在验证你的试错路径...";
 
     try {
-        const response = await fetch('/chat', {
+        const response = await fetch(`${API_BASE}/chat`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
