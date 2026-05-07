@@ -1,7 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
-import google.generativeai as genai
 import json
 from datetime import datetime
 import traceback
@@ -10,26 +9,30 @@ import sys
 app = Flask(__name__)
 CORS(app)
 
-# 配置 Gemini
-api_key = os.environ.get("GEMINI_API_KEY")
-model = None
+@app.route('/ping', methods=['GET'])
+def ping():
+    return jsonify({"status": "alive", "time": datetime.now().isoformat()})
 
-if api_key:
+# 配置 Gemini
+def get_model():
+    api_key = os.environ.get("GEMINI_API_KEY")
+    if not api_key:
+        return None, "GEMINI_API_KEY is not set"
     try:
+        import google.generativeai as genai
         genai.configure(api_key=api_key)
-        model = genai.GenerativeModel('gemini-2.0-flash-exp')
+        return genai.GenerativeModel('gemini-2.0-flash-exp'), None
     except Exception as e:
-        print(f"GenAI configuration failed: {str(e)}")
-else:
-    print("GEMINI_API_KEY is not set in environment variables")
+        return None, str(e)
 
 @app.route('/chat', methods=['POST'])
 def chat():
+    model, error = get_model()
     if not model:
         return jsonify({
             "reply": "云端大脑未配置或初始化失败", 
             "debug": {
-                "api_key_present": api_key is not None,
+                "error": error,
                 "env_vars": list(os.environ.keys())
             }
         }), 500

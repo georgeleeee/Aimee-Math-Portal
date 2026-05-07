@@ -28,6 +28,10 @@
       "dest": "api/index.py"
     },
     {
+      "src": "/ping",
+      "dest": "api/index.py"
+    },
+    {
       "src": "/upload",
       "dest": "api/index.py"
     },
